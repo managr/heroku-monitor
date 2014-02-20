@@ -9,6 +9,8 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
+var Heroku = require('heroku-client');
+
 var app = express();
 
 // all environments
@@ -29,7 +31,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/heroku/callback', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
