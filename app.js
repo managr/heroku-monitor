@@ -8,10 +8,16 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-
-var Heroku = require('heroku-client');
+var env = require('node-env-file');
+var fs = require('fs');
 
 var app = express();
+
+fs.exists(__dirname + '/.env', function (exists) {
+  if (exists) {
+		env(__dirname + '/.env');
+	}
+});
 
 // all environments
 app.set('port', process.env.PORT || 3000);
