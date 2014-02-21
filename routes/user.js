@@ -17,7 +17,12 @@ exports.list = function(req, res){
 		
 		heroku = new Heroku({ token: info.access_token });
 		heroku.apps().list(function (err, apps) {
-			res.render('index', { token: info.access_token, apps: apps } )
+			// res.render('index', { token: info.access_token, apps: apps } )
+		});
+
+		heroku.post('/apps/boost-analytics/log-sessions', {"dyno":"web.1","lines":10,"source":"app","tail":true}, function (err, app) {
+			res.render('index', { token: '', apps: [], log_url: app.logplex_url } )
+			// console.log(app.logplex_url);
 		});
 
 	});

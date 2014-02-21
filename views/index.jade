@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  p Welcome to #{token}
+  p Welcome to #{token} #{log_url}
   each app, i in apps
     = apps[i].name
     br
