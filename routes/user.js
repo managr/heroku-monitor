@@ -14,12 +14,10 @@ exports.list = function(req, res){
 
 	request.post('https://id.heroku.com/oauth/token', {form: postdata}, function (e, r, body) {
 		var info = JSON.parse(body);
-		res.write(info.access_token);
 		
 		heroku = new Heroku({ token: info.access_token });
 		heroku.apps().list(function (err, apps) {
-			console.log(apps);
-			res.end();
+			res.render('index', { token: info.access_token, apps: apps } )
 		});
 
 	});
