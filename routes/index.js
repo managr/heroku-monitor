@@ -1,10 +1,9 @@
 var request = require('request');
 var Heroku = require('heroku-client');
 
-
 exports.index = function(req, res){
 	// need to extract and generate token
-	res.redirect(process.env.HEROKU_AUTH_URL + '/oauth/authorize?client_id=' + process.env.HEROKU_OAUTH_ID + '&response_type=code&scope=read&state=ala_ma_kota');
+	res.redirect(process.env.HEROKU_AUTH_URL + '/oauth/authorize?client_id=' + process.env.HEROKU_OAUTH_ID + '&response_type=code&scope=read');
 };
 
 
@@ -23,16 +22,19 @@ exports.list = function(req, res){
 			// res.render('index', { token: info.access_token, apps: apps } )
 		});
 
-		heroku.post('/apps/boost-analytics/log-sessions', {"tail":true}, function (err, app) {
-			res.render('index', { token: '', apps: [], log_url: app.logplex_url } )
-			// console.log(app.logplex_url);
-		});
-	});
-};
+		heroku.post('/apps/' + process.env.APPLICATION_NAME + '/log-sessions', {"tail":true}, function (err, app) {
+			log_handle_url = app.logplex_url
 
-exports.logs = function(req, res){
-	heroku.post('/apps/boost-analytics/log-sessions', {"tail":true}, function (err, app) {
-		res.render('index', { token: '', apps: [], log_url: app.logplex_url } )
-		// console.log(app.logplex_url);
+			stream = request(log_handle_url);
+			stream.on('data', function(chunk) {
+				// add transfering that to the socket.io
+      			console.log("Received body data:");
+      			console.log(chunk.toString());
+    		});
+			request(log_handle_url, function (error, response, body) {
+			  if (!error && response.statusCode == 200) {
+			  }
+			})
+		});
 	});
 };
