@@ -18,23 +18,20 @@ exports.list = function(req, res){
 		var info = JSON.parse(body);
 		
 		heroku = new Heroku({ token: info.access_token });
-		heroku.apps().list(function (err, apps) {
-			// res.render('index', { token: info.access_token, apps: apps } )
-		});
+		// we might list apps to pickup correct one
+		// heroku.apps().list(function (err, apps) {
+		// 	// res.render('index', { token: info.access_token, apps: apps } )
+		// });
 
 		heroku.post('/apps/' + process.env.APPLICATION_NAME + '/log-sessions', {"tail":true}, function (err, app) {
-			log_handle_url = app.logplex_url
 
-			stream = request(log_handle_url);
+			stream = request(app.logplex_url);
 			stream.on('data', function(chunk) {
 				// add transfering that to the socket.io
       			console.log("Received body data:");
       			console.log(chunk.toString());
     		});
-			request(log_handle_url, function (error, response, body) {
-			  if (!error && response.statusCode == 200) {
-			  }
-			})
+
 		});
 	});
 };
