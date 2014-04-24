@@ -10,6 +10,6 @@
     "heroku-client": "*",
     "request": "2.34.0",
     "node-env-file": "*",
-    "jade": "*"
+    "socket.io": "~0.9.6"
   }
 }
