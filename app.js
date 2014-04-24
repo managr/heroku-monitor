@@ -1,34 +1,17 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express');
-// var routes = require('./routes');
-var http = require('http');
-var path = require('path');
-var env = require('node-env-file');
-var fs = require('fs');
+var http    = require('http');
+var path    = require('path');
+var env     = require('node-env-file');
+var fs      = require('fs');
 
 var request = require('request');
-var Heroku = require('heroku-client');
-
-var app = express();
+var Heroku  = require('heroku-client');
 
 fs.exists(__dirname + '/.env', function (exists) {
   if (exists) {
 		env(__dirname + '/.env');
 	}
 });
-
-// all environments
-app.set('port', process.env.PORT || 3000);
-
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
-
 
 exports.index = function(req, res){
 	// need to extract and generate token
@@ -70,11 +53,31 @@ exports.list = function(req, res){
 };
 
 
+var app = express();
+
+app.set('port', process.env.PORT || 3000);
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
 
 app.get('/', exports.index);
 app.get('/heroku/callback', exports.list);
 
-
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+var io = require('socket.io').listen(server);
+
+io.configure(function () {
+  io.set("transports", ["xhr-polling"]);
+  io.set("polling duration", 10);
+});
+
+io.sockets.on('connection', function (socket) {
+  io.sockets.emit('status', { status: status }); // note the use of io.sockets to emit but socket.on to listen
+  socket.on('reset', function (data) {
+    status = "War is imminent!";
+    io.sockets.emit('status', { status: status });
+  });
 });
