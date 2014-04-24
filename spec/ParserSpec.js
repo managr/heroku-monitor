@@ -1,0 +1,1 @@
+var lineWithMemory = "2014-04-18T15:41:18.377439+00:00 heroku[web.1]: source=web.1 dyno=heroku.13849304.d07971c4-17a1-450f-9a1f-aac36653066d sample#memory_total=409.91MB sample#memory_rss=407.37MB sample#memory_cache=0.25MB sample#memory_swap=2.29MB sample#memory_pgpgin=110345pages sample#memory_pgpgout=5994pages";
